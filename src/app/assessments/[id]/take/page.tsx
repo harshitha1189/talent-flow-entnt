@@ -5,7 +5,10 @@ import { sampleAssessments } from '@/data/assessments';
 import AssessmentForm from '@/components/AssessmentForm';
 
 export default function TakeAssessmentPage() {
-  const { id } = useParams();
+ 
+  const params = useParams() as { id: string };
+  const id = params.id;
+
   const assessment = sampleAssessments.find(a => a.id === id);
 
   if (!assessment) {
