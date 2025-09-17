@@ -1,5 +1,6 @@
 // src/mocks/handlers.ts
 import { http, HttpResponse } from "msw";
+
 import { db, seedDB, Job, Candidate, Assessment } from "./db";
 
 const API = "/api"; // prefix for all routes
@@ -117,30 +118,33 @@ export const handlers = [
   }),
 
   // ---------------- Candidates ----------------
-  http.get(`${API}/candidates`, async ({ request }) => {
-    await delay();
-    const url = new URL(request.url);
-    const search = url.searchParams.get("search") ?? "";
-    const stage = url.searchParams.get("stage") ?? "";
-    const page = Number(url.searchParams.get("page") ?? "1");
-    const pageSize = Number(url.searchParams.get("pageSize") ?? "10");
+http.get(`${API}/candidates`, async ({ request }) => {
+  await delay();
+  const url = new URL(request.url);
+  const search = url.searchParams.get("search") ?? "";
+  const stage = url.searchParams.get("stage") ?? "";
+  const page = Number(url.searchParams.get("page") ?? "1");
+  const pageSize = Number(url.searchParams.get("pageSize") ?? "10");
 
-    let list = [...db.candidates];
-    if (search) {
-      list = list.filter(
-        (c) =>
-          c.name.toLowerCase().includes(search.toLowerCase()) ||
-          c.email.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-    if (stage) list = list.filter((c) => c.stage === stage);
+  let list = [...db.candidates];
+  if (search) {
+    list = list.filter(
+      (c) =>
+        c.name.toLowerCase().includes(search.toLowerCase()) ||
+        c.email.toLowerCase().includes(search.toLowerCase())
+    );
+  }
 
-    const total = list.length;
-    const start = (page - 1) * pageSize;
-    const items = list.slice(start, start + pageSize);
+  if (stage) {
+    list = list.filter((c) => c.stage.toLowerCase() === stage.toLowerCase());
+  }
 
-    return HttpResponse.json({ items, total, page, pageSize });
-  }),
+  const total = list.length;
+  const start = (page - 1) * pageSize;
+  const items = list.slice(start, start + pageSize);
+
+  return HttpResponse.json({ items, total, page, pageSize });
+}),
 
   http.post(`${API}/candidates`, async ({ request }) => {
     await delay();

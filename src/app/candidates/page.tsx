@@ -46,12 +46,21 @@ export default function CandidatesPage() {
   // Add Candidate modal
   const [showForm, setShowForm] = useState(false);
 
-  // --- Filtering
+  // --- Filtering (normalized stage comparison)
+ 
+  function normalizeStage(stage: string) {
+    return stage.toLowerCase().replace(/\s+/g, '');
+  }
+
   let filtered = candidates.filter((c) => {
     const matchSearch =
       c.name.toLowerCase().includes(search.toLowerCase()) ||
       c.email.toLowerCase().includes(search.toLowerCase());
-    const matchStage = stage === 'all' || c.stage === stage;
+
+    const matchStage =
+      stage === 'all' ||
+      normalizeStage(c.stage) === normalizeStage(stage);
+
     return matchSearch && matchStage;
   });
 
@@ -135,7 +144,10 @@ export default function CandidatesPage() {
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Add Candidate
               </h2>
-              <button onClick={() => setShowForm(false)} className="text-gray-500 hover:text-gray-800 dark:hover:text-gray-200">
+              <button
+                onClick={() => setShowForm(false)}
+                className="text-gray-500 hover:text-gray-800 dark:hover:text-gray-200"
+              >
                 <X className="h-5 w-5" />
               </button>
             </div>

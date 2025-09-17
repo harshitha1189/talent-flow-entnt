@@ -4,14 +4,20 @@ export interface TimelineEvent {
   date: string;
 }
 
-export type Candidate = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  role: any;
+export interface Candidate {
   id: string;
   name: string;
   email: string;
-  jobId: string | null;
-  stage: 'applied' | 'screen' | 'tech' | 'offer' | 'hired' | 'rejected'; // 👈 all lowercase
+  role: string;
+  applicationId: string;
   appliedDate: string;
-  timeline: { id: string; label: string; date: string }[];
-};
+  stage: "applied" | "screen" | "tech" | "offer" | "hired" | "rejected";  
+  avatar?: string;  
+  notes?: string;   
+  timeline: {
+    id: string;
+    label: string;
+    date: string;
+  }[];
+}
+

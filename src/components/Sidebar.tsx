@@ -1,4 +1,3 @@
-
 'use client';
 
 import { motion } from 'framer-motion';
@@ -12,11 +11,12 @@ const menuItems = [
   { id: 'assessments', label: 'Assessments', icon: BarChart3, href: '/assessments' },
 ];
 
-
 export default function Sidebar() {
   const pathname = usePathname();
 
   const isActive = (href: string) => {
+    if (!pathname) return false; // ✅ Guard against null
+
     if (href === '/') {
       return pathname === '/';
     }
@@ -25,7 +25,6 @@ export default function Sidebar() {
 
   return (
     <div className="w-64 flex-shrink-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-screen">
-
       <div className="p-6">
         <h2 className="text-xl font-bold text-gray-900 dark:text-white">TalentFlow</h2>
       </div>

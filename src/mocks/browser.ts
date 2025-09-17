@@ -1,5 +1,5 @@
-// src/mocks/browser.ts
-import { setupWorker } from 'msw';
+import { setupWorker } from 'msw/browser';
 import { handlers } from './handlers';
 
+// Only for client/browser
 export const worker = setupWorker(...handlers);
