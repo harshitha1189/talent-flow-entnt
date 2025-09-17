@@ -1,17 +1,29 @@
+// src/components/StatusBadge.tsx
+"use client";
+
+import { JobStatus } from "@/types/job";
+
 interface StatusBadgeProps {
-  status: 'Open' | 'Closed';
+  status: JobStatus;
 }
 
 export default function StatusBadge({ status }: StatusBadgeProps) {
-  const isOpen = status === 'Open';
-  
+  const getStatusStyles = (status: JobStatus) => {
+    switch (status) {
+      case "Open":
+        return "bg-green-500/20 text-green-400";
+      case "Closed":
+        return "bg-gray-500/20 text-gray-400";
+      default:
+        return "bg-gray-500/20 text-gray-400";
+    }
+  };
+
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-        isOpen
-          ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
-          : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
-      }`}
+      className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusStyles(
+        status
+      )}`}
     >
       {status}
     </span>

@@ -4,30 +4,57 @@ import { motion } from 'framer-motion';
 import { Candidate } from '@/types/candidate';
 
 interface StatusBadgeProps {
-  stage: Candidate['stage'];
+  stage?: string; // allow flexible strings from backend
 }
 
+const stageLabels: Record<string, string> = {
+  applied: 'Applied',
+  screening: 'Screening',
+  screen: 'Screening',
+  tech: 'Technical',
+  technical: 'Technical',
+  offer: 'Offered',
+  offered: 'Offered',
+  hired: 'Hired',
+  rejected: 'Rejected',
+  interviewing: 'Interviewing', // added for your mock data
+};
+
 const StatusBadge = ({ stage }: StatusBadgeProps) => {
-  const getStageStyles = (stage: Candidate['stage']) => {
-    switch (stage) {
-      case 'Applied':
+  if (!stage) return null;
+
+  // normalize stage (lowercase, remove spaces)
+  const normalized = stage.toLowerCase().replace(/\s+/g, '');
+
+  const getStageStyles = (s: string) => {
+    switch (s) {
+      case 'applied':
         return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
-      case 'Interviewing':
+      case 'screen':
+      case 'screening':
         return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400';
-      case 'Offered':
+      case 'tech':
+      case 'technical':
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
+      case 'offer':
+      case 'offered':
         return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
-      case 'Hired':
+      case 'hired':
         return 'bg-green-200 text-green-900 dark:bg-green-900/40 dark:text-green-300';
-      case 'Rejected':
+      case 'rejected':
         return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
+      case 'interviewing':
+        return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400';
       default:
         return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400';
     }
   };
 
   return (
-    <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStageStyles(stage)}`}>
-      {stage}
+    <span
+      className={`px-2 py-1 text-xs font-medium rounded-full ${getStageStyles(normalized)}`}
+    >
+      {stageLabels[normalized] ?? stage}
     </span>
   );
 };
@@ -72,9 +99,6 @@ export default function CandidateTable({ candidates, onView }: CandidateTablePro
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm font-medium text-gray-900 dark:text-white">
                   {candidate.name}
-                </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  {candidate.role}
                 </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">

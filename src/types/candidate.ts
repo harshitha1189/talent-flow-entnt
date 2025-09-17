@@ -4,15 +4,14 @@ export interface TimelineEvent {
   date: string;
 }
 
-export interface Candidate {
+export type Candidate = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  role: any;
   id: string;
   name: string;
   email: string;
-  stage: 'Applied' | 'Interviewing' | 'Offered' | 'Hired' | 'Rejected';
-  avatar?: string;  // optional avatar path
-  role: string;
-  applicationId: string;
-  timeline: TimelineEvent[];
-  notes?: string;
-  appliedDate: string; // ✅ New field
-}
+  jobId: string | null;
+  stage: 'applied' | 'screen' | 'tech' | 'offer' | 'hired' | 'rejected'; // 👈 all lowercase
+  appliedDate: string;
+  timeline: { id: string; label: string; date: string }[];
+};

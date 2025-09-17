@@ -1,13 +1,21 @@
-export interface Job {
+// src/types/job.ts
+
+export type JobStatus = "Open" | "Closed";  // ✅ match MSW/db.ts
+
+export type Job = {
   id: string;
   title: string;
-  status: 'Open' | 'Closed';
+  slug: string;
+  status: "Open" | "Closed";
   tags: string[];
-  company?: string;
-}
+  order: number;
+  archived?: boolean; // ✅ add this
+};
+
 
 export interface FilterState {
   search: string;
-  status: string;
+  status: "" | JobStatus;
   tags: string;
+  archived?: boolean;
 }
