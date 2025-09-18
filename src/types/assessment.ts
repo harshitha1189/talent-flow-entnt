@@ -27,8 +27,8 @@ export interface AssessmentSection {
 export interface Assessment {
   id: string;
   title: string;
-  description?: string;
-  sections: AssessmentSection[];
+  description: string;
+  sections: AssessmentSection[];   
   createdAt: string;
   updatedAt: string;
 }

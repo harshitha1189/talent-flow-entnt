@@ -1,74 +1,56 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { ChevronLeft } from 'lucide-react';
 
-import { Assessment } from '@/types/assessment';
-import AssessmentBuilder from '@/components/AssessmentBuilder';
-import AssessmentPreview from '@/components/AssessmentPreview';
-import { sampleAssessments } from '@/data/assessments';
+const roles = [
+  { id: 'frontend', title: 'Frontend Developer', icon: '🎨' },
+  { id: 'backend', title: 'Backend Engineer', icon: '⚙️' },
+  { id: 'ux', title: 'UX Designer', icon: '✏️' },
+  { id: 'pm', title: 'Product Manager', icon: '🚀' },
+];
 
-export default function AssessmentsPage() {
-  const [assessment, setAssessment] = useState<Assessment>(
-    sampleAssessments[0] // load first sample assessment
-  );
-
-  // Load saved assessment from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem('current_assessment');
-    if (saved) {
-      try {
-        setAssessment(JSON.parse(saved));
-      } catch (err) {
-        console.error('Error loading assessment:', err);
-      }
-    }
-  }, []);
-
-  // Save assessment changes to localStorage
-  useEffect(() => {
-    localStorage.setItem('current_assessment', JSON.stringify(assessment));
-  }, [assessment]);
-
+export default function AssessmentsLanding() {
   return (
-    <div className="min-h-screen p-6">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-6 space-y-2"
-      >
-        {/* 🔙 Back Button */}
+    <div className="p-6 space-y-8">
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Create a New Assessment
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400">
+          Select a job role to start building a tailored assessment.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {roles.map((role) => (
+          <motion.div
+            key={role.id}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+            className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 shadow-sm"
+          >
+            <div className="text-3xl mb-4">{role.icon}</div>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+              {role.title}
+            </h3>
+            <Link
+              href={`/assessments/builder?role=${role.id}`}
+              className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline"
+            >
+              Start Building →
+            </Link>
+          </motion.div>
+        ))}
+      </div>
+
+      <div>
         <Link
-          href="/"
-          className="inline-flex items-center text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+          href="/assessments/builder"
+          className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline"
         >
-          <ChevronLeft className="w-5 h-5 mr-2" />
-          Back
+          Or, create a new role from scratch
         </Link>
-
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-            Assessments
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Build and preview technical assessments
-          </p>
-        </div>
-      </motion.div>
-
-      {/* Builder + Preview grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left: Builder */}
-        <AssessmentBuilder
-          assessment={assessment}
-          onAssessmentChange={setAssessment}
-        />
-
-        {/* Right: Preview */}
-        <AssessmentPreview assessment={assessment} />
       </div>
     </div>
   );

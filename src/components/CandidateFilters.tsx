@@ -6,8 +6,19 @@ interface CandidateFiltersProps {
   onSearch: (query: string) => void;
   onSort: (value: string) => void;
   onExport: () => void;
-  onStageChange: (stage: string) => void; 
+  onStageChange: (stage: string) => void;
 }
+
+// ✅ keep labels consistent with Kanban/Table
+const tabs = [
+  { key: 'all', label: 'All Candidates' },
+  { key: 'applied', label: 'Application Received' },
+  { key: 'screen', label: 'Screening Interview' },
+  { key: 'tech', label: 'Technical Assessment' },
+  { key: 'offer', label: 'Offer Sent' },
+  // { key: 'hired', label: 'Hired' },
+  // { key: 'rejected', label: 'Rejected' },
+];
 
 export default function CandidateFilters({
   onSearch,
@@ -18,26 +29,24 @@ export default function CandidateFilters({
   const [query, setQuery] = useState('');
   const [activeTab, setActiveTab] = useState('all');
 
-  const tabs = ['all', 'Applied', 'Interviewing', 'Hired', 'Rejected'];
-
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
       {/* Tabs */}
-      <div className="flex gap-2 mb-2 sm:mb-0">
+      <div className="flex gap-2 mb-2 sm:mb-0 flex-wrap">
         {tabs.map((tab) => (
           <button
-            key={tab}
+            key={tab.key}
             onClick={() => {
-              setActiveTab(tab);
-              onStageChange(tab);
+              setActiveTab(tab.key);
+              onStageChange(tab.key);
             }}
             className={`px-3 py-1 text-sm rounded-full ${
-              activeTab === tab
+              activeTab === tab.key
                 ? 'bg-blue-600 text-white'
                 : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900/30'
             }`}
           >
-            {tab === 'all' ? 'All Candidates' : tab}
+            {tab.label}
           </button>
         ))}
       </div>

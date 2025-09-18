@@ -1,8 +1,21 @@
 'use client';
 
 import React from 'react';
-import { Plus, Trash2, Type, CheckSquare, Square, FileText, Hash, Upload } from 'lucide-react';
-import { Assessment, AssessmentSection, AssessmentQuestion } from '@/types/assessment';
+import {
+  Plus,
+  Trash2,
+  Type,
+  CheckSquare,
+  Square,
+  FileText,
+  Hash,
+  Upload,
+} from 'lucide-react';
+import {
+  Assessment,
+  AssessmentSection,
+  AssessmentQuestion,
+} from '@/types/assessment';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface AssessmentBuilderProps {
@@ -19,28 +32,39 @@ const questionTypes = [
   { id: 'file-upload', label: 'File Upload', icon: Upload },
 ];
 
-export default function AssessmentBuilder({ assessment, onAssessmentChange }: AssessmentBuilderProps) {
+export default function AssessmentBuilder({
+  assessment,
+  onAssessmentChange,
+}: AssessmentBuilderProps) {
   const addSection = () => {
     const newSection: AssessmentSection = {
       id: `section_${Date.now()}`,
       title: `Section ${assessment.sections.length + 1}`,
       questions: [],
     };
-    onAssessmentChange({ ...assessment, sections: [...assessment.sections, newSection] });
+    onAssessmentChange({
+      ...assessment,
+      sections: [...assessment.sections, newSection],
+    });
   };
 
-  const addQuestion = (sectionId: string, type: AssessmentQuestion['type']) => {
+  const addQuestion = (
+    sectionId: string,
+    type: AssessmentQuestion['type']
+  ) => {
     const newQuestion: AssessmentQuestion = {
       id: `question_${Date.now()}`,
       type,
       text: '',
       required: false,
-      ...(type === 'single-choice' || type === 'multi-choice' ? { options: [''] } : {}),
+      ...(type === 'single-choice' || type === 'multi-choice'
+        ? { options: ['Option 1'] }
+        : {}),
     };
 
     onAssessmentChange({
       ...assessment,
-      sections: assessment.sections.map(section =>
+      sections: assessment.sections.map((section: AssessmentSection) =>
         section.id === sectionId
           ? { ...section, questions: [...section.questions, newQuestion] }
           : section
@@ -48,23 +72,30 @@ export default function AssessmentBuilder({ assessment, onAssessmentChange }: As
     });
   };
 
-  const updateSection = (sectionId: string, updates: Partial<AssessmentSection>) => {
+  const updateSection = (
+    sectionId: string,
+    updates: Partial<AssessmentSection>
+  ) => {
     onAssessmentChange({
       ...assessment,
-      sections: assessment.sections.map(section =>
+      sections: assessment.sections.map((section: AssessmentSection) =>
         section.id === sectionId ? { ...section, ...updates } : section
       ),
     });
   };
 
-  const updateQuestion = (sectionId: string, questionId: string, updates: Partial<AssessmentQuestion>) => {
+  const updateQuestion = (
+    sectionId: string,
+    questionId: string,
+    updates: Partial<AssessmentQuestion>
+  ) => {
     onAssessmentChange({
       ...assessment,
-      sections: assessment.sections.map(section =>
+      sections: assessment.sections.map((section: AssessmentSection) =>
         section.id === sectionId
           ? {
               ...section,
-              questions: section.questions.map(q =>
+              questions: section.questions.map((q: AssessmentQuestion) =>
                 q.id === questionId ? { ...q, ...updates } : q
               ),
             }
@@ -73,19 +104,34 @@ export default function AssessmentBuilder({ assessment, onAssessmentChange }: As
     });
   };
 
+  const updateOptions = (
+    sectionId: string,
+    questionId: string,
+    newOptions: string[]
+  ) => {
+    updateQuestion(sectionId, questionId, { options: newOptions });
+  };
+
   const deleteSection = (sectionId: string) => {
     onAssessmentChange({
       ...assessment,
-      sections: assessment.sections.filter(section => section.id !== sectionId),
+      sections: assessment.sections.filter(
+        (section: AssessmentSection) => section.id !== sectionId
+      ),
     });
   };
 
   const deleteQuestion = (sectionId: string, questionId: string) => {
     onAssessmentChange({
       ...assessment,
-      sections: assessment.sections.map(section =>
+      sections: assessment.sections.map((section: AssessmentSection) =>
         section.id === sectionId
-          ? { ...section, questions: section.questions.filter(q => q.id !== questionId) }
+          ? {
+              ...section,
+              questions: section.questions.filter(
+                (q: AssessmentQuestion) => q.id !== questionId
+              ),
+            }
           : section
       ),
     });
@@ -101,7 +147,9 @@ export default function AssessmentBuilder({ assessment, onAssessmentChange }: As
         <input
           type="text"
           value={assessment.title}
-          onChange={(e) => onAssessmentChange({ ...assessment, title: e.target.value })}
+          onChange={(e) =>
+            onAssessmentChange({ ...assessment, title: e.target.value })
+          }
           className="w-full mt-1 px-3 py-2 border rounded-md dark:bg-gray-800 dark:text-white"
           placeholder="Enter assessment title..."
         />
@@ -110,7 +158,9 @@ export default function AssessmentBuilder({ assessment, onAssessmentChange }: As
       {/* Sections */}
       <div>
         <div className="flex justify-between items-center mb-2">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Sections</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            Sections
+          </h3>
           <button
             onClick={addSection}
             className="flex items-center gap-1 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md"
@@ -119,7 +169,7 @@ export default function AssessmentBuilder({ assessment, onAssessmentChange }: As
           </button>
         </div>
 
-        {assessment.sections.map((section) => (
+        {assessment.sections.map((section: AssessmentSection) => (
           <motion.div
             key={section.id}
             initial={{ opacity: 0, y: 10 }}
@@ -130,7 +180,9 @@ export default function AssessmentBuilder({ assessment, onAssessmentChange }: As
               <input
                 type="text"
                 value={section.title}
-                onChange={(e) => updateSection(section.id, { title: e.target.value })}
+                onChange={(e) =>
+                  updateSection(section.id, { title: e.target.value })
+                }
                 className="text-lg font-medium w-full px-2 py-1 dark:bg-gray-800 dark:text-white border rounded-md"
                 placeholder="Section title..."
               />
@@ -149,7 +201,9 @@ export default function AssessmentBuilder({ assessment, onAssessmentChange }: As
                 return (
                   <button
                     key={type.id}
-                    onClick={() => addQuestion(section.id, type.id as AssessmentQuestion['type'])}
+                    onClick={() =>
+                      addQuestion(section.id, type.id as AssessmentQuestion['type'])
+                    }
                     className="flex items-center gap-1 px-2 py-1 text-xs bg-gray-200 dark:bg-gray-700 rounded-md"
                   >
                     <Icon className="w-3 h-3" />
@@ -161,7 +215,7 @@ export default function AssessmentBuilder({ assessment, onAssessmentChange }: As
 
             {/* Questions */}
             <AnimatePresence>
-              {section.questions.map((q) => (
+              {section.questions.map((q: AssessmentQuestion) => (
                 <motion.div
                   key={q.id}
                   initial={{ opacity: 0, y: 5 }}
@@ -172,7 +226,9 @@ export default function AssessmentBuilder({ assessment, onAssessmentChange }: As
                   <div className="flex justify-between items-start">
                     <textarea
                       value={q.text}
-                      onChange={(e) => updateQuestion(section.id, q.id, { text: e.target.value })}
+                      onChange={(e) =>
+                        updateQuestion(section.id, q.id, { text: e.target.value })
+                      }
                       className="w-full px-2 py-1 text-sm border rounded-md dark:bg-gray-800 dark:text-white"
                       placeholder="Enter your question..."
                     />
@@ -183,16 +239,64 @@ export default function AssessmentBuilder({ assessment, onAssessmentChange }: As
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
+
+                  {/* Required checkbox */}
                   <div className="mt-2">
                     <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                       <input
                         type="checkbox"
                         checked={q.required}
-                        onChange={(e) => updateQuestion(section.id, q.id, { required: e.target.checked })}
+                        onChange={(e) =>
+                          updateQuestion(section.id, q.id, {
+                            required: e.target.checked,
+                          })
+                        }
                       />
                       Required
                     </label>
                   </div>
+
+ {/* Choice Options (only for single/multi-choice) */}
+{(q.type === 'single-choice' || q.type === 'multi-choice') && (
+  <div className="mt-3 space-y-2">
+    <h4 className="text-sm font-medium">Options</h4>
+    {(q.options ?? []).map((opt, idx) => (
+      <div key={idx} className="flex items-center gap-2 mb-1">
+        <input
+          type="text"
+          value={opt}
+          onChange={(e) => {
+            const newOpts = [...(q.options ?? [])];
+            newOpts[idx] = e.target.value;
+            updateOptions(section.id, q.id, newOpts);
+          }}
+          className="flex-1 px-2 py-1 text-sm border rounded-md dark:bg-gray-800 dark:text-white"
+          placeholder={`Option ${idx + 1}`}
+        />
+        <button
+          onClick={() => {
+            const newOpts = (q.options ?? []).filter((_, i) => i !== idx);
+            updateOptions(section.id, q.id, newOpts);
+          }}
+          className="text-red-500 hover:text-red-700"
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
+      </div>
+    ))}
+    <button
+      onClick={() =>
+        updateOptions(section.id, q.id, [
+          ...(q.options ?? []),
+          `Option ${(q.options?.length ?? 0) + 1}`,
+        ])
+      }
+      className="flex items-center gap-1 text-sm text-blue-600 hover:underline"
+    >
+      <Plus className="w-4 h-4" /> Add Option
+    </button>
+  </div>
+)}
                 </motion.div>
               ))}
             </AnimatePresence>

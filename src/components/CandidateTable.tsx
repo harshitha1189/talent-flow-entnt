@@ -8,41 +8,35 @@ interface StatusBadgeProps {
 }
 
 const stageLabels: Record<string, string> = {
-  applied: 'Applied',
-  screen: 'Screening',
-  screening: 'Screening',
-  tech: 'Technical',
-  technical: 'Technical',
-  offer: 'Offered',
-  offered: 'Offered',
+  applied: 'Application Received',
+  screen: 'Screening Interview',
+  tech: 'Technical Assessment',
+  offer: 'Offer Sent',
   hired: 'Hired',
   rejected: 'Rejected',
-  interviewing: 'Interviewing',
 };
 
 const StatusBadge = ({ stage }: StatusBadgeProps) => {
   if (!stage) return null;
   const normalized = stage.toLowerCase().replace(/\s+/g, '');
+
+  const styles =
+    normalized === 'applied'
+      ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+      : normalized === 'screen' || normalized === 'screening'
+      ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+      : normalized === 'tech' || normalized === 'technical'
+      ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400'
+      : normalized === 'offer' || normalized === 'offered'
+      ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+      : normalized === 'hired'
+      ? 'bg-green-200 text-green-900 dark:bg-green-900/40 dark:text-green-300'
+      : normalized === 'rejected'
+      ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+      : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400';
+
   return (
-    <span
-      className={`px-2 py-1 text-xs font-medium rounded-full ${
-        normalized === 'applied'
-          ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-          : normalized === 'screen' || normalized === 'screening'
-          ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
-          : normalized === 'tech' || normalized === 'technical'
-          ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
-          : normalized === 'offer' || normalized === 'offered'
-          ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-          : normalized === 'hired'
-          ? 'bg-green-200 text-green-900 dark:bg-green-900/40 dark:text-green-300'
-          : normalized === 'rejected'
-          ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-          : normalized === 'interviewing'
-          ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400'
-          : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
-      }`}
-    >
+    <span className={`px-2 py-1 text-xs font-medium rounded-full ${styles}`}>
       {stageLabels[normalized] ?? stage}
     </span>
   );
@@ -91,7 +85,7 @@ export default function CandidateTable({ candidates, onView }: CandidateTablePro
                 <StatusBadge stage={candidate.stage} />
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                {candidate.appliedDate}
+                {candidate.appliedDate || "--"}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                 <motion.button

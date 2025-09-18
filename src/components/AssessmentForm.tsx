@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Assessment } from '@/types/assessment';
+import { Assessment, AssessmentSection, AssessmentQuestion } from '@/types/assessment';
 
 interface AssessmentFormProps {
   assessment: Assessment;
@@ -19,8 +19,8 @@ export default function AssessmentForm({ assessment }: AssessmentFormProps) {
   const validate = () => {
     const newErrors: Record<string, string> = {};
 
-    assessment.sections.forEach((section) => {
-      section.questions.forEach((q) => {
+    assessment.sections.forEach((section: AssessmentSection) => {
+      section.questions.forEach((q: AssessmentQuestion) => {
         const value = responses[q.id];
 
         if (q.required && !value) {
@@ -68,14 +68,14 @@ export default function AssessmentForm({ assessment }: AssessmentFormProps) {
         {assessment.description}
       </p>
 
-      {assessment.sections.map((section) => (
+      {assessment.sections.map((section: AssessmentSection) => (
         <div key={section.id} className="mb-8">
           <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
             {section.title}
           </h2>
 
           <div className="space-y-4">
-            {section.questions.map((q) => (
+            {section.questions.map((q: AssessmentQuestion) => (
               <div key={q.id}>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   {q.text} {q.required && <span className="text-red-500">*</span>}
@@ -102,7 +102,7 @@ export default function AssessmentForm({ assessment }: AssessmentFormProps) {
 
                 {q.type === 'single-choice' && (
                   <div className="space-y-2">
-                    {q.options?.map((opt) => (
+                    {(q.options ?? []).map((opt: string) => (
                       <label key={opt} className="flex items-center gap-2">
                         <input
                           type="radio"
@@ -119,7 +119,7 @@ export default function AssessmentForm({ assessment }: AssessmentFormProps) {
 
                 {q.type === 'multi-choice' && (
                   <div className="space-y-2">
-                    {q.options?.map((opt) => (
+                    {(q.options ?? []).map((opt: string) => (
                       <label key={opt} className="flex items-center gap-2">
                         <input
                           type="checkbox"

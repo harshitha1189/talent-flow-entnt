@@ -15,7 +15,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   const isActive = (href: string) => {
-    if (!pathname) return false; // ✅ Guard against null
+    if (!pathname) return false;
 
     if (href === '/') {
       return pathname === '/';
