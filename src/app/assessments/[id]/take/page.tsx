@@ -8,16 +8,18 @@ import { Assessment, AssessmentQuestion } from '@/types/assessment';
 export default function TakeAssessmentPage() {
   const params = useParams();
   const id = (params?.id as string) || '';
+console.log("params:", params);
+console.log("id from params:", id);
+console.log("all sample IDs:", sampleAssessments.map(a => a.id));
 
   // Find matching assessment
   const assessment: Assessment | undefined = sampleAssessments.find(
     (a) => a.id === id
   );
 
-  // Flatten questions across all sections
-  const allQuestions: AssessmentQuestion[] = assessment
-    ? assessment.sections.flatMap((s) => s.questions)
-    : [];
+  // Flatten all questions across sections
+  const allQuestions: AssessmentQuestion[] =
+    assessment?.sections.flatMap((s) => s.questions) ?? [];
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -25,6 +27,11 @@ export default function TakeAssessmentPage() {
 
   if (!assessment) {
     return <div className="p-6">❌ Assessment not found</div>;
+  }
+
+  // Guard: no questions in this assessment
+  if (allQuestions.length === 0) {
+    return <div className="p-6">⚠️ This assessment has no questions</div>;
   }
 
   const question = allQuestions[currentQuestion];
@@ -64,7 +71,6 @@ export default function TakeAssessmentPage() {
           Q{currentQuestion + 1}. {question.text}
         </h2>
 
-        {/* Render inputs depending on question type */}
         <div className="space-y-2">
           {(question.options ?? []).map((opt: string) => (
             <label
@@ -81,33 +87,6 @@ export default function TakeAssessmentPage() {
               {opt}
             </label>
           ))}
-
-          {question.type === 'short-text' && (
-            <input
-              type="text"
-              value={answers[question.id] || ''}
-              onChange={(e) => handleAnswer(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md dark:bg-gray-800 dark:border-gray-600"
-            />
-          )}
-
-          {question.type === 'long-text' && (
-            <textarea
-              value={answers[question.id] || ''}
-              onChange={(e) => handleAnswer(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md dark:bg-gray-800 dark:border-gray-600"
-              rows={4}
-            />
-          )}
-
-          {question.type === 'numeric' && (
-            <input
-              type="number"
-              value={answers[question.id] || ''}
-              onChange={(e) => handleAnswer(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md dark:bg-gray-800 dark:border-gray-600"
-            />
-          )}
         </div>
 
         <button
